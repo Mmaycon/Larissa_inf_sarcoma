@@ -6,6 +6,7 @@ dim(metadata) #25 smp
 identical(colnames(DE_input_matrix), metadata$smpID) #FALSE
 
 
+
 colnames(DE_input_matrix) <- make.names(colnames(DE_input_matrix), unique = TRUE)
 metadata$smpID <- make.names(metadata$smpID, unique = TRUE)
 setdiff(colnames(DE_input_matrix), metadata$smpID)
