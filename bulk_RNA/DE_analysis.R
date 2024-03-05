@@ -36,7 +36,7 @@ values <- data.frame(values)
 wpvalues <- unlist(mclapply(values,
                               function(gene) {
                                 zz <- wilcox.exact(gene[1:  dim(etv6_mt)[2]],
-                                                   gene[c(dim(etv6_mt)[2]+1) : dim(kinase_mt)[2]], exact=T) # excat = T nos da um resultado mais preciso, mas demora mais pra rodar o looping. Entao, exact = F é melhor custo-beneficio. . .
+                                                   gene[c(dim(etv6_mt)[2]+1) : dim(DE_input_matrix)[2]], exact=T) # excat = T nos da um resultado mais preciso, mas demora mais pra rodar o looping. Entao, exact = F é melhor custo-beneficio. . .
                                 z <- zz$p.value
                                 return(z)
                               }, mc.cores= 20))
@@ -44,9 +44,9 @@ wpvalues_adj <- p.adjust(wpvalues, method = "BH")
 wpvalues_adj <- data.frame(wpvalues_adj)
 wpvalues_adj$gene <- rownames(wpvalues_adj)
 hist(wpvalues_adj$wpvalues_adj)
-table(wpvalues < 0.05)
-# Compute FoldChange
+table(wpvalues_adj$wpvalues_adj < 0.05) # no genes  ....
 
+# Compute FoldChange
 # Calculate the mean expression for each gene across conditions
 mean_expr_etv6 <- rowMeans(DE_input_matrix[, etv6]) #row = genes; columns = samples
 mean_expr_kinase <- rowMeans(DE_input_matrix[, kinase])
@@ -55,8 +55,6 @@ fold_change <- mean_expr_etv6 / mean_expr_kinase # interpret it as "etv6 group h
 fold_change <- data.frame(fold_change) 
 fold_change$gene <- rownames(fold_change)
 hist(fold_change$fold_change, breaks = 1000)
-summary(fold_change)
-fold_change[fold_change$fold_change %in% max(fold_change$fold_change), ]
 
 
 FG_pvalue <- merge(fold_change, wpvalues_adj, by='gene')
@@ -64,6 +62,7 @@ volcano <- data.frame(DE_input_matrix)
 volcano$gene <- rownames(volcano)
 volcano <- merge(volcano, FG_pvalue, by='gene')
 head(volcano)
+table(volcano$wpvalues_adj < 0.05)
 
 # Create labels for the volcano plot 
 volcano$threshold <- "1" # threshold info will be used to define DMP and to color volcano plots

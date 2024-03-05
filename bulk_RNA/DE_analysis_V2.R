@@ -237,6 +237,7 @@ ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), )) +
 
 install.packages('writexl')
 library(writexl)
+res_sig$genes <- rownames(res_sig)
 write_xlsx(res_sig[res_sig$log2FoldChange >= 0.5, ],"/mnt/scratch1/LFurtado-fibrosarcoma/RNA-Align/analysis/FG05_high_176_genes.xlsx")
 write_xlsx(res_sig[res_sig$log2FoldChange <= -0.5, ],"/mnt/scratch1/LFurtado-fibrosarcoma/RNA-Align/analysis/FG05_low_268_genes.xlsx")
 
