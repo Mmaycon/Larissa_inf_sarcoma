@@ -15,7 +15,7 @@ unique_sample_ids <- c("SJBT032721_D1-S3", # done
                        "SJST030433_D1-S3", # done 
                        "SJST030567_D1-S10", # done
   "SJST032838_D1-S4", # done 
-  "SJST032952_D1-S9", # NEED TO REVIEW THE FILE PAIR
+  "SJST032952_D1-S9", # NEED TO REVIEW THE FILE PAIR. MULTIPLE FASTQ.
   "SJST032952_D2-S5", # done
   "SJST032952_D4-S4", # done
   "SJST032952_D4-S9", # NEED TO REVIEW  - only one fastq
