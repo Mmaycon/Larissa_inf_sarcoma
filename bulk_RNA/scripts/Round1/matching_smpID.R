@@ -17,13 +17,18 @@ first_split_kinase <- str_split_fixed(as.character(bam_files_kinase), "[Aligned]
 # length(bam_files_ETV6) #10 samples
 # length(bam_files_kinase) #18 samples
 length(first_split_ETV6) #10
+first_split_ETV6 <- first_split_ETV6[!first_split_ETV6 %in% 'SJST033312_D1-S13']
+length(first_split_ETV6) #9
 length(first_split_kinase)#18
 
 
 # .bam files to count matrix
 count_matrix <- readRDS("/mnt/scratch1/LFurtado-fibrosarcoma/RNA-Align/count_matrix.rds")
+count_matrix <- as.data.frame(count_matrix)
 dim(count_matrix) #27 samples
 table(duplicated(colnames(count_matrix))) # no duplicates
+count_matrix <- count_matrix[, !colnames(count_matrix) %in% 'SJST033312_D1-S13'] # multiqc fall out
+
 # fixing the sample ID
 # library(stringr)
 # colnames(count_matrix) <- str_split_fixed(as.character(colnames(count_matrix)), "[-]", 2)[,1]
@@ -66,43 +71,39 @@ library(stringr)
 colnames(count_matrix) <- str_split_fixed(as.character(colnames(count_matrix)), "[-]", 2)[,1]
 # Comparing both sampleID
 length(colnames(count_matrix)) #27 samples
-table(duplicated(colnames(count_matrix))) # 2 duplicates now
-table(colnames(count_matrix)) # SJST031362_D1 and SJST033312_D1
+table(duplicated(colnames(count_matrix))) # 1 duplicate
+table(colnames(count_matrix)) # SJST031362_D1 
+# Solve duplicate (SJST031362_D1) in count matrix 
+colnames(count_matrix) <- make.names(colnames(count_matrix), unique = TRUE)
+colnames(count_matrix)
 
 length(labsheet$smpID)#27 samples
 table(duplicated(labsheet$smpID)) # 0 duplicates now
 
-setdiff(colnames(count_matrix), labsheet$smpID) #"SJST030375_R2"
+setdiff(colnames(count_matrix), labsheet$smpID) #"SJST030375_R2" "SJST031362_D1.1"
 setdiff(labsheet$smpID, colnames(count_matrix)) #"STST030375_R2" "SJST030375_D1" "SJST032952_D1"
 
 
-#@@@ Conclusion: count_matrix has one sample (STST030375_R2) which labsheet doesn't; labsheet has two sample ("SJST030375_D1", "SJST032952_D1") which count_matrix doesn't. Total: Those 3 samples must fall out of our analysis 
+#@@@ Conclusion: STST030375_R2 is misspelled in labshet; labsheet has two sample ("SJST030375_D1", "SJST032952_D1") which count_matrix doesn't. Total: Those 3 samples must fall out of our analysis; we must duplicate SJST031362_D1 in the labsheet
 
-count_matrix <- count_matrix[, c(1:9, 11:27), drop = FALSE] #it's a matrix. It requeries it's own subsetting
-dim(count_matrix) #26 samples 
-labsheet <- labsheet[!labsheet$smpID %in% c("STST030375_R2", "SJST030375_D1", "SJST032952_D1"), ]
-dim(labsheet) #24 samples
-
-setdiff(colnames(count_matrix), labsheet$smpID) #nada
-setdiff(labsheet$smpID, colnames(count_matrix)) # nada
-
-
-#@@@ Conclusion: We need to duplicate SJST031362_D1 and SJST033312_D1 in the labsheet
-# Solve it in labsheet
+# editing misspelling 
+labsheet$smpID[10] <- 'SJST030375_R2'
+# deleting samples there're only in labsheet
+labsheet <- labsheet[!labsheet$smpID %in% c("SJST030375_D1", "SJST032952_D1"), ]
+# duplicate SJST033312_D1 in the labsheet
 row1 <- labsheet[labsheet$smpID %in% 'SJST031362_D1', ]
 row1$smpID <- 'SJST031362_D1.1'
-row2 <- labsheet[labsheet$smpID %in% 'SJST033312_D1', ]
-row2$smpID <- 'SJST033312_D1.1'
-labsheet <- rbind(labsheet, row1, row2)
-# Solve it in count_matrix
-colnames(count_matrix) <- make.names(colnames(count_matrix), unique = TRUE)
+labsheet <- rbind(labsheet, row1)
 
 
-length(labsheet$smpID) #26 samples (2 duplicates) but still unique smpIDs
-length(colnames(count_matrix))#26 samples (2 duplicates) but still unique smpIDs
 
+length(labsheet$smpID) #26 samples (1 uplicate) but still unique smpIDs
+length(colnames(count_matrix))#26 samples (1 duplicate) but still unique smpIDs
+length(intersect(labsheet$smpID, colnames(count_matrix))) #25
+setdiff(labsheet$smpID, colnames(count_matrix))
 
 save(count_matrix, labsheet, file = '/mnt/scratch1/LFurtado-fibrosarcoma/RNA-Align/analysis/reviewed_smpID_countmtx_labsheet.rda')
+
 
 
 

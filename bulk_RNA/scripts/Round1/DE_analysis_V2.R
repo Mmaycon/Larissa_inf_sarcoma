@@ -220,7 +220,7 @@ scores <- merge(labsheet, aux, by.y=0, by.x="smpID", all.x=T)
 # Load necessary library and set theme
 library(ggplot2); theme_set(theme_classic())
 # Create PCA plot for all samples separated by articles
-ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), )) +
+ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), shape=smp_type)) +
   geom_point(size = 4) +
   scale_color_manual(values=c('slateblue3', 'wheat3'), name="Group") +
   xlab(paste0("PC1 (", prettyNum(summary(pca)$importance[2,1]*100, digits = 2), "%)")) +
@@ -232,8 +232,9 @@ ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), )) +
         legend.title = element_text(size = 16),  
         legend.text = element_text(size = 14),
         plot.title = element_text(size = 16, color = "black", face = "bold")) +
-  #geom_text_repel(aes(label = smpID)) +
-  ggtitle("PCA normalized data (444 genes after DE and 25smps(23unique))") 
+  geom_text_repel(aes(label = smpID)) +
+  ggtitle("smp_type batch effect") 
+  #ggtitle("PCA normalized data (444 genes after DE and 25smps(23unique))") 
 
 install.packages('writexl')
 library(writexl)
@@ -243,5 +244,76 @@ write_xlsx(res_sig[res_sig$log2FoldChange <= -0.5, ],"/mnt/scratch1/LFurtado-fib
 
 saveRDS(res_sig[res_sig$log2FoldChange >= 0.5, ], '/mnt/scratch1/LFurtado-fibrosarcoma/RNA-Align/analysis/FG05_high_176_genes.rds')
 saveRDS(res_sig[res_sig$log2FoldChange <= -0.5, ], '/mnt/scratch1/LFurtado-fibrosarcoma/RNA-Align/analysis/FG05_low_268_genes.rds')
+
+
+
+# Fresh/frozen tissue batch effect visualization -------
+
+# PCA of normalized counts
+# remove outlier
+count_matrix <- count_matrix[, !colnames(count_matrix) %in% "SJST034534_D1"]
+labsheet <- labsheet[!labsheet$smpID %in% "SJST034534_D1", ]
+# make it identical (same sequence)
+count_matrix <- count_matrix[, labsheet$smpID]
+identical(colnames(count_matrix), labsheet$smpID) #TRUE
+# add rownames into labsheet
+rownames(labsheet) <- labsheet$smpID
+
+# Filtering low count genes
+count_matrix <- as.matrix(count_matrix)
+dds <- DESeqDataSetFromMatrix(count_matrix, colData = labsheet, design = ~ group)
+# pre-filtering
+table(metadata$group)
+smallestGroupSize <-  9 #only 9 samples on the smallest group (ETV6)
+keep <- rowSums(counts(dds) >= 1000) >= smallestGroupSize
+dds <- dds[keep,]
+# Normalization
+dds <- estimateSizeFactors(dds)
+sizeFactors(dds)
+normalized_counts <- counts(dds, normalized=TRUE)
+dim(normalized_counts) #6082   25
+# Perform PCA
+pca <- prcomp(t(normalized_counts)) 
+aux <- as.data.frame(pca$x[, 1:3]) 
+# Merge data
+scores <- merge(labsheet, aux, by.y=0, by.x="smpID", all.x=T)
+# Make a column for histologic diagnosis to be plotted over outilers samples only
+scores$histologic_for_outlier <- 'Others'
+outlier_smp <- c('SJST033491_D1',
+                 'SJST032952_D2',
+                 'SJST032952_D4',
+                 'SJST032767_D2',
+                 'SJST033312_D1',
+                 'SJST033835_D1',
+                 'SJST031920_D1')
+his_diag <- scores[scores$smpID %in% outlier_smp, ]$histologic_diagnosis
+
+scores[scores$smpID %in% outlier_smp[1], ]$histologic_for_outlier <- his_diag[1]
+scores[scores$smpID %in% outlier_smp[2], ]$histologic_for_outlier <- his_diag[2]
+scores[scores$smpID %in% outlier_smp[3], ]$histologic_for_outlier <- his_diag[3]
+scores[scores$smpID %in% outlier_smp[4], ]$histologic_for_outlier <- his_diag[4]
+scores[scores$smpID %in% outlier_smp[5], ]$histologic_for_outlier <- his_diag[5]
+scores[scores$smpID %in% outlier_smp[6], ]$histologic_for_outlier <- his_diag[6]
+scores[scores$smpID %in% outlier_smp[7], ]$histologic_for_outlier <- his_diag[7]
+
+# Load necessary library and set theme
+library(ggplot2); theme_set(theme_classic())
+# Create PCA plot for all samples separated by articles
+ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), shape=tumor_site)) +
+  geom_point(size = 4) +
+  scale_color_manual(values=c('slateblue3', 'wheat3'), name="Group") +
+  xlab(paste0("PC1 (", prettyNum(summary(pca)$importance[2,1]*100, digits = 2), "%)")) +
+  ylab(paste0("PC2 (", prettyNum(summary(pca)$importance[2,2]*100, digits = 2), "%)")) +
+  scale_x_continuous(labels = scales::scientific_format()) +
+  scale_y_continuous(labels = scales::scientific_format()) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        legend.title = element_text(size = 16),  
+        legend.text = element_text(size = 14),
+        plot.title = element_text(size = 16, color = "black", face = "bold")) +
+  geom_text_repel(aes(label = smpID)) +
+  ggtitle("") 
+
+
 
 
