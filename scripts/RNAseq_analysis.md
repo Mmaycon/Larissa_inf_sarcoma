@@ -523,6 +523,9 @@ ggplot(pdata.teste.tsne, aes(x=tSNE1, y=tSNE2, colour=factor(group), shape = smp
 dev.off()
 ```
 
+![](images/tsne_RNAseq_counts.png)<!-- -->
+
+
 ``` r
 # PCA - input: normalized_counts matrix
 png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_3/scripts/Documentation/images/PCA_RNAseq_normalized_batchcorrected.png", width = 8, height = 6, units = "in", res = 300)
@@ -551,6 +554,9 @@ ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), shape = smp_type)) +
 
 dev.off()
 ```
+
+![](images/PCA_RNAseq_normalized_batchcorrected.png)<!-- -->
+
 
 ``` r
 # t-SNE 
@@ -581,6 +587,9 @@ ggplot(pdata.teste.tsne, aes(x=tSNE1, y=tSNE2, colour=factor(group), shape = smp
 
 dev.off()
 ```
+
+![](images/tsne_RNAseq_normalized_batchcorrected.png)<!-- -->
+
 
 ``` r
 # Volcano plot  -----
@@ -615,6 +624,9 @@ EnhancedVolcano(#res_sig,
 dev.off()
 ```
 
+![](images/Volcano_RNAseq_AllDEGs.png)<!-- -->
+
+
 ``` r
 # PCA
 # PCA - input: normalized_counts_DEGs matrix
@@ -644,6 +656,9 @@ ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), shape = smp_type)) +
 
 dev.off()
 ```
+
+![](images/PCA_RNAseq_normalized_batchcorrected_DEGs.png)<!-- -->
+
 
 ``` r
 # Biological Pathways Analysis -----
@@ -685,6 +700,9 @@ ggplot(ego2_up_plot, aes(x = Count, y = reorder(Description, Count), fill = p.ad
 dev.off()
 ```
 
+![](images/enrichmentBarplot_upDEGs_RNAseq.png)<!-- -->
+
+
 ``` r
 # Up regulated genes - Gene-Concept Network
 # Trying to catch redundant pathways 
@@ -723,6 +741,9 @@ dev.off()
 # NOT INFORMATIVE PLOT ^^^^^^^^^^
 ```
 
+![](images/enrichmentCnetplot_upDEGs_RNAseq.png)<!-- -->
+
+
 ``` r
 # Down regulated genes - Gene Ontology
 ego2_down <- enrichGO(gene = down_genes_kinase,
@@ -754,6 +775,9 @@ ggplot(ego2_down_plot, aes(x = Count, y = reorder(Description, Count), fill = p.
 dev.off()
 ```
 
+![](images/enrichmentBarplot_downDEGs_RNAseq.png)<!-- -->
+
+
 ``` r
 # Down regulated genes - Gene-Concept Network
 ego2_down_sub <- filter(ego2_down, Description %in% ego2_down_plot$Description) #trying to add wnt pathways into network plot
@@ -782,6 +806,9 @@ dev.off()
 # p2
 # NOT INFORMATIVE PLOT ^^^^^^^^
 ```
+
+![](images/enrichmentCnetplot_downDEGs_RNAseq.png)<!-- -->
+
 
 ``` r
 # Heatmap -----
@@ -918,6 +945,9 @@ pheatmap(normalized_counts_hm[rownames(normalized_counts_hm) %in% rownames(DEGs)
 dev.off()
 ```
 
+![](images/heatmap_allDEGs_RNAseq.png)<!-- -->
+
+
 ``` r
 # Gene Exp. Correlation -----
 library(ggplot2)
@@ -978,6 +1008,9 @@ corrplot(cor_matrix_degs, method = "color", type = "full",
 
 dev.off()
 ```
+
+![](images/correlationPlot_DEGs_RNAseq.png)<!-- -->
+
 
 ``` r
 # Stemness (no stat. sig difference) -----
