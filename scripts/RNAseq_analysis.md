@@ -490,6 +490,9 @@ ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), shape = smp_type)) +
 
 dev.off()
 
+![](images/PCA_RNAseq_counts.png)
+
+
 # t-SNE 
 png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_3/scripts/Documentation/images/tsne_RNAseq_counts.png", width = 8, height = 6, units = "in", res = 300)
 
