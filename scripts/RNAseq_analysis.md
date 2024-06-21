@@ -490,7 +490,7 @@ ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), shape = smp_type)) +
 
 dev.off()
 
-![](images/PCA_RNAseq_counts.png)
+![](scripts/images/PCA_RNAseq_counts.png)
 
 
 # t-SNE 
