@@ -554,7 +554,7 @@ ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), shape = smp_type)) +
 
 dev.off()
 ```
-
+#OBS: the "batch correction through matrix design" affects only the Differential Expression
 ![](images/PCA_RNAseq_normalized_batchcorrected.png)<!-- -->
 
 
