@@ -1,0 +1,8 @@
+"","gene","meandiff_DNAmet","maxdiff_DNAmet","meth_status","log2FoldChange","expression_status","Group_direction"
+"1","ARHGEF10",0.196844466676149,0.352763827287641,"hyper_methylated",-0.871928343110207,"down_expressed","Kinase"
+"2","ARHGEF10",0.297896275131965,0.315414277088713,"hyper_methylated",-0.871928343110207,"down_expressed","Kinase"
+"3","CFAP54",-0.276257588662498,-0.34741284421885,"down_methylated",2.58724757932355,"up_expressed","Kinase"
+"6","KSR1",0.182927253979259,0.323973099823261,"hyper_methylated",-0.706750533510538,"down_expressed","Kinase"
+"8","PROM1",0.171574662598395,0.325325001803127,"hyper_methylated",-4.48971627637562,"down_expressed","Kinase"
+"9","SMURF2",0.219519515920605,0.249209083620428,"hyper_methylated",-0.870657885167273,"down_expressed","Kinase"
+"10","WNK1",0.169183029539956,0.328139916164441,"hyper_methylated",-0.919319526626723,"down_expressed","Kinase"
