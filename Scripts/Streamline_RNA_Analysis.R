@@ -1,3 +1,6 @@
+### Description: from expression matrix (count matrix) to downsteram analysis 
+### Technology: bulk RNA-seq
+
 library(DESeq2)
 library(sva)
 library(dplyr)
