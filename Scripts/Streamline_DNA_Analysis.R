@@ -156,7 +156,10 @@ pheatmap(cor_matrix[,], #smp_ID on columns and rows
 
 
 ## Without displying pvalue_symbol_matrix
-pheatmap(cor_matrix[,], #smp_ID on columns and rows
+
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/DNAmet_cor_hm.png",  width = 8, height = 8, units = "in", res = 300)
+
+p <- pheatmap(cor_matrix[,], #smp_ID on columns and rows
          #annotation_row = my_probe_col, 
          annotation_col = my_sample_col[, ],
          show_rownames = FALSE,
@@ -170,6 +173,9 @@ pheatmap(cor_matrix[,], #smp_ID on columns and rows
          annotation_colors = ann_colors,
          main = "Most Variable CpGs from PC1,2,3 - Correlation - scale:none")
 
+print(p)
+
+dev.off()
 
 
 ## PCA and tSNE --------------
@@ -211,8 +217,10 @@ pca <- prcomp(t(beta))
 aux <- as.data.frame(pca$x[, 1:3]) 
 scores <- merge(beta_meta, aux, by.y=0, by.x="smp_ID", all.x=T)
 
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/DNAmet_PCA_supplementary.png",  width = 8, height = 6, units = "in", res = 300)
+
 library(ggplot2); theme_set(theme_classic())
-ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), 
+p <- ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), 
                    #shape = smp_type
 )) +
   geom_point(size = 4) +
@@ -229,6 +237,9 @@ ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group),
   #geom_text_repel(aes(label = smpID)) +
   ggtitle("Whole Array - StJude + PublicData")
 
+print(p)
+
+dev.off()
 
 
 
@@ -241,8 +252,10 @@ pdata.teste.tsne <- scores #renaming metadata
 pdata.teste.tsne$tSNE1 <- tsne_realData$Y[,1]
 pdata.teste.tsne$tSNE2 <- tsne_realData$Y[,2]
 
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/DNAmet_tSNE.png",  width = 8, height = 6, units = "in", res = 300)
+
 library(ggplot2); theme_set(theme_classic())
-ggplot(pdata.teste.tsne, aes(x=tSNE1, y=tSNE2, 
+p <- ggplot(pdata.teste.tsne, aes(x=tSNE1, y=tSNE2, 
                              colour=factor(group), 
                              #shape = smp_type
 )) +
@@ -260,28 +273,29 @@ ggplot(pdata.teste.tsne, aes(x=tSNE1, y=tSNE2,
   #geom_text_repel(aes(label = smpID)) +
   ggtitle("Whole Array - StJude + PublicData") 
 
+print(p)
+dev.off()
 
 
-
-# Plot tSNE (V2)
-library(ggplot2); theme_set(theme_classic())
-ggplot(pdata.teste.tsne, aes(x=tSNE1, y=tSNE2, 
-                             colour=factor(group), 
-                             shape = source
-)) +
-  geom_point(size = 4) +
-  scale_color_manual(values=c('slateblue3', 'wheat3'), name="Group") +
-  # xlab(paste0("PC1 (", prettyNum(summary(pca)$importance[2,1]*100, digits = 2), "%)")) +
-  # ylab(paste0("PC2 (", prettyNum(summary(pca)$importance[2,2]*100, digits = 2), "%)")) +
-  scale_x_continuous(labels = scales::scientific_format()) +
-  scale_y_continuous(labels = scales::scientific_format()) +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        legend.title = element_text(size = 16),  
-        legend.text = element_text(size = 14),
-        plot.title = element_text(size = 16, color = "black", face = "bold")) +
-  #geom_text_repel(aes(label = smpID)) +
-  ggtitle("Whole Array - StJude + PublicData") 
+# # Plot tSNE (V2)
+# library(ggplot2); theme_set(theme_classic())
+# ggplot(pdata.teste.tsne, aes(x=tSNE1, y=tSNE2, 
+#                              colour=factor(group), 
+#                              shape = source
+# )) +
+#   geom_point(size = 4) +
+#   scale_color_manual(values=c('slateblue3', 'wheat3'), name="Group") +
+#   # xlab(paste0("PC1 (", prettyNum(summary(pca)$importance[2,1]*100, digits = 2), "%)")) +
+#   # ylab(paste0("PC2 (", prettyNum(summary(pca)$importance[2,2]*100, digits = 2), "%)")) +
+#   scale_x_continuous(labels = scales::scientific_format()) +
+#   scale_y_continuous(labels = scales::scientific_format()) +
+#   theme(axis.text = element_text(size = 12),
+#         axis.title = element_text(size = 14, face = "bold"),
+#         legend.title = element_text(size = 16),  
+#         legend.text = element_text(size = 14),
+#         plot.title = element_text(size = 16, color = "black", face = "bold")) +
+#   #geom_text_repel(aes(label = smpID)) +
+#   ggtitle("Whole Array - StJude + PublicData") 
 
 
 
@@ -429,7 +443,10 @@ volcano_plot_input <- dmp_diffmean
 ## Volcano V1
 library(EnhancedVolcano) # ISSUE: somehow I can't add gene names onto volcano plot using EnhancedVolcano
 rownames(volcano_plot_input) <- volcano_plot_input$probeID # don't run it if it doesn't need to
-EnhancedVolcano(
+
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/DNAmet_DMP_Volcano.png",  width = 10, height = 6, units = "in", res = 300)
+
+p <- EnhancedVolcano(
   volcano_plot_input, # DMP
   #lab = rownames(res_kinaseDirection),
   #lab = as.character(rownames(res_kinaseDirection)),
@@ -460,6 +477,8 @@ EnhancedVolcano(
   xlim = c(-0.5, 0.5)
 )
 
+print(p)
+dev.off()
 
 ## Volcano V2
 # dim(beta) # 856801     38
@@ -554,11 +573,34 @@ dim(dmr.table) #572  13
 # saveRDS(dmr.table, '/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/DNAmet/Round_2/reviewed_DM_direction/dmr_table.rds')
 # dmr.table <- readRDS("/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/DNAmet/Round_2/reviewed_DM_direction/dmr_table.rds")
 
-
 ## Retrieving CpGs from DMRs
 # CpGs to promoters 
+### Retrieving CpGs from DMRs ----------
+# Turn illumina manifest (CpG-gene annotation) into GRange object
+# So we can get info. from indiviudal CpGs and gene annotations from the manifest
+library(readr)
+EPIC.hg38.anno <- read_csv("/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/DNAmet/Round_2/infinium-methylationepic-v-1-0-b5-manifest-file.csv", skip = 7)
+# Make it a genomic range object
+EPIC.hg38.anno.gr <- makeGRangesFromDataFrame(EPIC.hg38.anno, keep.extra.columns=T, start.field = "Start_hg38", end.field = "End_hg38", seqnames.field = "CHR_hg38", strand.field="Strand_hg38", na.rm=TRUE) 
 
-# dmr_table output (not a Genomic Range obj)
+# Components from DMR 
+chr <- dmr.table$seqnames
+start <- dmr.table$start
+end <- dmr.table$end
+# Merging illumina manifest annotation to DMR output
+filtered_gr <- subsetByOverlaps(EPIC.hg38.anno.gr, GRanges(seqnames = chr, ranges = IRanges(start = start, end = end), keep.extra.columns = TRUE))
+df <- as.data.frame(filtered_gr)
+length(df$Name) #426 CpGs from DMR output
+df$UCSC_RefGene_Name
+df_CpGs_DMR <- data.frame(df$Name)
+
+#Saving 
+# saveRDS(df_CpGs_DMR, '/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/DNAmet/Round_2/df_CpGs_DMR.rds')
+
+
+df_CpGs_DMR <- readRDS("/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/DNAmet/Round_2/reviewed_DM_direction/df_CpGs_DMR.rds")
+names(df_CpGs_DMR) <- "CpG_ID"
+
 dmr_table <- readRDS("/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/DNAmet/Round_2/reviewed_DM_direction/dmr_table.rds")
 # transforming both back in a Genomic Range obj to retrieve all dmr_table columns but with the specific CpGs in each genomic interval 
 library(readr)
@@ -613,8 +655,10 @@ hyper_CpG_promoter_df <- df_CpG_promoter[df_CpG_promoter$meth_status %in% "hyper
 df <- table(hyper_CpG_promoter_df$gene) %>% data.frame()
 df <- df[order(df$Freq, decreasing = TRUE), ]
 
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/DNAmet_hist_Kinase_Hyper_CpGfreq_to_promoter.png",  width = 8, height = 8, units = "in", res = 300)
+
 library(ggplot2); theme_set(theme_classic())
-ggplot(df[, ], aes(reorder(x = factor(Var1), Freq), y = Freq, )) +
+p <- ggplot(df[, ], aes(reorder(x = factor(Var1), Freq), y = Freq, )) +
   geom_bar(stat = "identity", color = "black") +
   labs(#title = "Frequency of Cells by Sample ID",
     x = "Genes",
@@ -630,6 +674,8 @@ ggplot(df[, ], aes(reorder(x = factor(Var1), Freq), y = Freq, )) +
   
   ggtitle("Freq of Kinase HYPER CpG from DMR and the promoter-genes annotation") 
 
+print(p)
+dev.off()
 
 # Hypo meth CpGs (Kinase hypo methylated compared to ETV6) 
 hypo_CpG_promoter_df <- df_CpG_promoter[df_CpG_promoter$meth_status %in% "hypo", ]
@@ -637,8 +683,10 @@ hypo_CpG_promoter_df <- df_CpG_promoter[df_CpG_promoter$meth_status %in% "hypo",
 df <- table(hypo_CpG_promoter_df$gene) %>% data.frame()
 df <- df[order(df$Freq, decreasing = TRUE), ]
 
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/DNAmet_hist_Kinase_Hypo_CpGfreq_to_promoter.png",  width = 8, height = 8, units = "in", res = 300)
+
 library(ggplot2); theme_set(theme_classic())
-ggplot(df[, ], aes(reorder(x = factor(Var1), Freq), y = Freq, )) +
+p <- ggplot(df[, ], aes(reorder(x = factor(Var1), Freq), y = Freq, )) +
   geom_bar(stat = "identity", color = "black") +
   labs(#title = "Frequency of Cells by Sample ID",
     x = "Genes",
@@ -654,6 +702,8 @@ ggplot(df[, ], aes(reorder(x = factor(Var1), Freq), y = Freq, )) +
   
   ggtitle("Freq of Kinase HYPO CpG from DMR and the promoter-genes annotation") 
 
+print(p)
+dev.off()
 
 
 ## Stemness score ------------
@@ -694,15 +744,18 @@ pca <- prcomp(t(beta))
 aux <- as.data.frame(pca$x[, 1:3]) 
 scores <- merge(beta_meta, aux, by.y=0, by.x="smp_ID", all.x=T)
 
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/DNAmet_PCA_Stemness.png",  width = 8, height = 6, units = "in", res = 300)
+
 library(ggplot2); theme_set(theme_classic())
-ggplot(scores, aes(PC1, PC2)) + geom_point(size=5, aes( fill=Stemness_DNAmet, color = group), pch = 21, stroke = 1.5) + 
+p <- ggplot(scores, aes(PC1, PC2)) + geom_point(size=5, aes( fill=Stemness_DNAmet, color = group), pch = 21, stroke = 1.5) + 
   scale_fill_gradientn(colours = rev(brewer.pal(n = 11, name = "RdBu"))) +
   scale_color_manual(values = c('slateblue3', 'wheat3')) +
   ylab(paste0('PC2 ', summary(pca)$importance[2, 2] * 100, '%')) +
   xlab(paste0('PC1 ', summary(pca)$importance[2, 1] * 100, '%') ) + theme_bw() +
   ggtitle('WholeArray - Stemness prediction')
 
-
+print(p)
+dev.off()
 
 
 # Plot Boxplot 
@@ -714,8 +767,11 @@ scores %>%
   wilcox_test(Stemness_DNAmet ~ group, p.adjust.method = "none") %>%
   add_significance() #p-value = 0.0224
 
+
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/DNAmet_Boxplot_Stemness.png",  width = 8, height = 6, units = "in", res = 300)
+
 library(ggplot2); theme_set(theme_classic())
-ggplot(scores[, ], aes(x=group, y=Stemness_DNAmet)) + 
+p <- ggplot(scores[, ], aes(x=group, y=Stemness_DNAmet)) + 
   geom_boxplot(fill= c('slateblue3', 'wheat3'), 
                outlier.color = NA) + 
   geom_jitter (alpha=0.2)  +
@@ -727,7 +783,8 @@ ggplot(scores[, ], aes(x=group, y=Stemness_DNAmet)) +
   #facet_wrap(~ sample_char) +
   ggtitle("Stemness diff. beetween groups (p = 0.01745)") 
 
-
+print(p)
+dev.off()
 
 
 

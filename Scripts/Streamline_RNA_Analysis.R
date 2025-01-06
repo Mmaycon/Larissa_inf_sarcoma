@@ -130,8 +130,10 @@ aux <- as.data.frame(pca$x[, 1:3])
 labsheet$smpID <- rownames(labsheet)
 scores <- merge(labsheet, aux, by.y=0, by.x="smpID", all.x=T)
 # Plot it 
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/RNA_PCA.png",  width = 8, height = 6, units = "in", res = 300)
+
 library(ggplot2); theme_set(theme_classic())
-ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), shape = smp_type)) +
+p <- ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), shape = smp_type)) +
   geom_point(size = 4) +
   scale_color_manual(values=c('slateblue3', 'wheat3'), name="Group") +
   xlab(paste0("PC1 (", prettyNum(summary(pca)$importance[2,1]*100, digits = 2), "%)")) +
@@ -145,6 +147,9 @@ ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), shape = smp_type)) +
         plot.title = element_text(size = 16, color = "black", face = "bold")) +
   #geom_text_repel(aes(label = smpID)) +
   ggtitle("Normalized / batch corrected (mtx design) - whole transcriptome") 
+
+print(p)
+dev.off()
 
 
 ## Volcano plot 
@@ -160,10 +165,12 @@ top_Kinase <- rownames(res_pos[order(res_pos$log2FoldChange, decreasing = TRUE),
 top_ETV6 <- rownames(res_neg[order(res_neg$log2FoldChange, decreasing = FALSE), ])[1:20]
 selected_genes <- c(top_Kinase, top_ETV6)
 
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/RNA_DEG_Volcano.png",  width = 8, height = 6, units = "in", res = 300)
+
 library(EnhancedVolcano) # ISSUE: somehow I can't add gene names onto volcano plot using EnhancedVolcano
 res_kinaseDirection <- readRDS("/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Objects/DEGs_kinase_direction_noCutoffs.rds")
 #rownames(res_sig) <- res_sig$SYMBOL # don't run it if it doesn't need to
-EnhancedVolcano(#res_sig,
+p <- EnhancedVolcano(#res_sig,
   res_kinaseDirection, # DEG output not filtered yet
   #lab = rownames(res_kinaseDirection),
   #lab = as.character(rownames(res_kinaseDirection)),
@@ -192,7 +199,8 @@ EnhancedVolcano(#res_sig,
   subtitle = "", # Subtitle should be on the same line as title
 )
 
-
+print(p)
+dev.off()
 
 ### DEGs - Pathway Enrichmemnt (Gene Ontology) -----------
 library(clusterProfiler)
@@ -224,11 +232,16 @@ ego2_kinase_plot <- ego2_kinase@result[ego2_kinase@result$Description %in%
                                    "microtubule bundle formation", "axonemal dynein complex assembly",
                                    "cilium or flagellum-dependent cell motility"), ]
 
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/RNA_Kinase_DEGs_PathEnrichment.png",  width = 8, height = 6, units = "in", res = 300)
+
 library(ggplot2); theme_set(theme_classic())
-ggplot(ego2_kinase_plot, aes(x = Count, y = reorder(Description, Count), fill = p.adjust)) +
+p <- ggplot(ego2_kinase_plot, aes(x = Count, y = reorder(Description, Count), fill = p.adjust)) +
   geom_col() +
   labs(x = "Gene Count", y = "", title = "Tumor-Kinase Up Regulated Pathways") +
   scale_fill_gradient(low = "red", high = "blue", name = "p.adjust") 
+
+print(p)
+dev.off()
 
 ## Network plot 
 library(UpSetR)
@@ -246,10 +259,15 @@ ego2_up_sub <- filter(ego2_kinase, Description %in% ego2_kinase$Description)
 edox <- setReadable(ego2_up_sub, 'org.Hs.eg.db', 'ENTREZID')
 geneList <- up_genes_kinase
 
-cnetplot(edox, foldChange=geneList, 
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/RNA_Kinase_DEGs_PathNetwork.png",  width = 8, height = 6, units = "in", res = 300)
+
+p <- cnetplot(edox, foldChange=geneList, 
                #circular = TRUE, colorEdge = TRUE, 
                #showCategory = "", 
 ) + ggtitle("Tumor-Kinase Up Regulated Pathways ") 
+
+print(p)
+dev.off()
 
 ## Save enrichment output table 
 # write.csv(ego2_kinase_plot, '/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Objects/ego2_kinase_pathways_table_filtered.csv')
@@ -278,12 +296,15 @@ ego2_etv6_plot <- ego2_etv6@result[ego2_etv6@result$Description %in% c("Wnt sign
                                                                        "bone development"), ]
 
 
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/RNA_ETV6_DEGs_PathEnrichment.png",  width = 8, height = 6, units = "in", res = 300)
 library(ggplot2); theme_set(theme_classic())
-ggplot(ego2_etv6_plot, aes(x = Count, y = reorder(Description, Count), fill = p.adjust)) +
+p <- ggplot(ego2_etv6_plot, aes(x = Count, y = reorder(Description, Count), fill = p.adjust)) +
   geom_col() +
   labs(x = "Gene Count", y = "", title = "Tumor-Kinase Down Regulated Pathways") +
   scale_fill_gradient(low = "red", high = "blue", name = "p.adjust") 
 
+print(p)
+dev.off()
 
 ego2_down_sub <- filter(ego2_etv6, Description %in% ego2_etv6_plot$Description) #trying to add wnt pathways into network plot
 ego2_down_sub@result$p.adjust <- 0.001 # this is only to make it go to the plot !
@@ -291,10 +312,14 @@ ego2_down_sub@result$qvalue <- 0.001 # this is only to make it go to the plot !
 edox <- setReadable(ego2_down_sub, 'org.Hs.eg.db', 'ENTREZID')
 geneList <- up_genes_etv6
 
-cnetplot(edox, foldChange=geneList, 
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/RNA_ETV6_DEGs_PathNetwork.png",  width = 8, height = 6, units = "in", res = 300)
+p <- cnetplot(edox, foldChange=geneList, 
                #circular = TRUE, colorEdge = TRUE, 
                #showCategory = "", 
 ) 
+
+print(p)
+dev.off()
 
 ## Save enrichment output table 
 # write.csv(ego2_etv6_plot, '/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Objects/ego2_etv6_pathways_table_filtered.csv')
@@ -473,7 +498,9 @@ pheatmap(cor_matrix[,], #smp_ID on columns and rows
          main = "Most Variable Genes from PC1,2,3 - Correlation - scale:none")
 
 # No cor stats 
-pheatmap(cor_matrix[,], #smp_ID on columns and rows
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/RNA_cor_hm.png",  width = 8, height = 8, units = "in", res = 300)
+
+p <- pheatmap(cor_matrix[,], #smp_ID on columns and rows
          #annotation_row = my_probe_col, 
          annotation_col = my_sample_col[, ],
          show_rownames = FALSE,
@@ -487,7 +514,8 @@ pheatmap(cor_matrix[,], #smp_ID on columns and rows
          annotation_colors = ann_colors,
          main = "Most Variable Genes from PC1,2,3 - Correlation - scale:none")
 
-
+print(p)
+dev.off()
 
 
 

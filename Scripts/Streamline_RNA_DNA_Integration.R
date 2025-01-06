@@ -218,8 +218,9 @@ my_colors <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00",
 
 # Plot DMR-DEGs integration scatter plot
 
+
 library(ggplot2); theme_set(theme_classic())
-ggplot(dmr.table_inter, aes(x = no.cpgs, y = width, col = gene, size = log2FoldChange)) +
+p <- ggplot(dmr.table_inter, aes(x = no.cpgs, y = width, col = gene, size = log2FoldChange)) +
   geom_point() +
   labs(
     title = "N of CpG by genome interval (bp)",
@@ -250,8 +251,10 @@ DEGs[DEGs$gene%in% c('NOS1',
 dmr.table_inter_filtered <- dmr.table_inter[dmr.table_inter$meandiff >= 0.16 |
                                               dmr.table_inter$meandiff <= -0.16, ]
 
+png(filename = "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Plots/RNA_DNAmet_related_genes_summary_plot.png",  width = 8, height = 6, units = "in", res = 300)
+
 library(ggplot2); theme_set(theme_classic())
-ggplot(dmr.table_inter_filtered, aes(x = no.cpgs, y = width, col = gene, size = log2FoldChange)) +
+p <- ggplot(dmr.table_inter_filtered, aes(x = no.cpgs, y = width, col = gene, size = log2FoldChange)) +
   geom_point() +
   labs(
     title = "N of CpG by genome interval (bp)",
@@ -261,6 +264,9 @@ ggplot(dmr.table_inter_filtered, aes(x = no.cpgs, y = width, col = gene, size = 
   theme_classic() +
   scale_color_manual(values = my_colors) +
   facet_wrap(~ meth_status)
+
+print(p)
+dev.off()
 
 
 ## A summary table for the RNA-DNAmet integration 
