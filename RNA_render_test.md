@@ -741,7 +741,7 @@ hist(res_sig$log2FoldChange,
      ylab = "N of genes")
 ```
 
-![](RNA_render_test_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](Plots/RNA_render_test_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
 ``` r
 # saveRDS(res_kinaseDirection, "/mnt/scratch1/maycon/Larissa_inffibrosarcoma/scripts_git/round_4/Objects/DEGs_kinase_direction_noCutoffs.rds")
@@ -778,7 +778,7 @@ p <- ggplot(scores, aes(x=PC1, y=PC2, colour=factor(group), shape = smp_type)) +
 print(p)
 ```
 
-![](RNA_render_test_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->
+![](Plots/RNA_render_test_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->
 
 ``` r
 #dev.off()
@@ -848,7 +848,7 @@ p <- EnhancedVolcano(#res_sig,
 print(p)
 ```
 
-![](RNA_render_test_files/figure-gfm/unnamed-chunk-1-3.png)<!-- -->
+![](Plots/RNA_render_test_files/figure-gfm/unnamed-chunk-1-3.png)<!-- -->
 
 ``` r
 #dev.off()
@@ -935,7 +935,7 @@ ego2_kinase@result[order(ego2_kinase@result$Count, decreasing = TRUE),][1:10,]
 barplot(ego2_kinase, drop=TRUE, main = "")
 ```
 
-![](RNA_render_test_files/figure-gfm/unnamed-chunk-1-4.png)<!-- -->
+![](Plots/RNA_render_test_files/figure-gfm/unnamed-chunk-1-4.png)<!-- -->
 
 ``` r
 #clusterProfiler::dotplot(ego2_up, showCategory=30) + ggtitle("")
@@ -958,7 +958,7 @@ p <- ggplot(ego2_kinase_plot, aes(x = Count, y = reorder(Description, Count), fi
 print(p)
 ```
 
-![](RNA_render_test_files/figure-gfm/unnamed-chunk-1-5.png)<!-- -->
+![](Plots/RNA_render_test_files/figure-gfm/unnamed-chunk-1-5.png)<!-- -->
 
 ``` r
 #dev.off()
@@ -992,7 +992,7 @@ UpSetR::upset(fromList(gene_list),
               nsets = 8) # Still need more time to interpret this ...
 ```
 
-![](RNA_render_test_files/figure-gfm/unnamed-chunk-1-6.png)<!-- -->
+![](Plots/RNA_render_test_files/figure-gfm/unnamed-chunk-1-6.png)<!-- -->
 
 ``` r
 # # Not doing as commented below
@@ -1022,7 +1022,7 @@ p <- cnetplot(edox, foldChange=geneList,
 print(p)
 ```
 
-![](RNA_render_test_files/figure-gfm/unnamed-chunk-1-7.png)<!-- -->
+![](Plots/RNA_render_test_files/figure-gfm/unnamed-chunk-1-7.png)<!-- -->
 
 ``` r
 #dev.off()
@@ -1094,7 +1094,7 @@ ego2_etv6@result[order(ego2_etv6@result$Count, decreasing = TRUE),][1:10,]
 barplot(ego2_etv6, drop=TRUE, main = "")
 ```
 
-![](RNA_render_test_files/figure-gfm/unnamed-chunk-1-8.png)<!-- -->
+![](Plots/RNA_render_test_files/figure-gfm/unnamed-chunk-1-8.png)<!-- -->
 
 ``` r
 # clusterProfiler::dotplot(ego2_etv6, showCategory=30) + ggtitle("")
@@ -1117,7 +1117,7 @@ p <- ggplot(ego2_etv6_plot, aes(x = Count, y = reorder(Description, Count), fill
 print(p)
 ```
 
-![](RNA_render_test_files/figure-gfm/unnamed-chunk-1-9.png)<!-- -->
+![](Plots/RNA_render_test_files/figure-gfm/unnamed-chunk-1-9.png)<!-- -->
 
 ``` r
 #dev.off()
@@ -1146,7 +1146,7 @@ p <- cnetplot(edox, foldChange=geneList,
 print(p)
 ```
 
-![](RNA_render_test_files/figure-gfm/unnamed-chunk-1-10.png)<!-- -->
+![](Plots/RNA_render_test_files/figure-gfm/unnamed-chunk-1-10.png)<!-- -->
 
 ``` r
 #dev.off()
@@ -2001,7 +2001,7 @@ pheatmap(cor_matrix[,], #smp_ID on columns and rows
          main = "Most Variable Genes from PC1,2,3 - Correlation - scale:none")
 ```
 
-![](RNA_render_test_files/figure-gfm/unnamed-chunk-1-11.png)<!-- -->
+![](Plots/RNA_render_test_files/figure-gfm/unnamed-chunk-1-11.png)<!-- -->
 
 ``` r
 # No cor stats 
@@ -2024,7 +2024,7 @@ p <- pheatmap(cor_matrix[,], #smp_ID on columns and rows
 print(p)
 ```
 
-![](RNA_render_test_files/figure-gfm/unnamed-chunk-1-12.png)<!-- -->
+![](Plots/RNA_render_test_files/figure-gfm/unnamed-chunk-1-12.png)<!-- -->
 
 ``` r
 #dev.off()
